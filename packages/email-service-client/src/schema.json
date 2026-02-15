@@ -1,0 +1,57 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/mail/send-auth-code": {
+      "post": {
+        "operationId": "MailController_sendAuthCode",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SendAuthCodeRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendAuthCodeResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Mail", "mail"]
+      }
+    }
+  },
+  "info": {
+    "title": "Email Service",
+    "description": "HTTP API",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "SendAuthCodeRequest": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "code": { "type": "string" }
+        },
+        "required": ["email", "code"]
+      },
+      "SendAuthCodeResponse": {
+        "type": "object",
+        "properties": { "success": { "type": "boolean" } },
+        "required": ["success"]
+      }
+    }
+  }
+}
