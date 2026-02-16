@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../database/database.module';
 import CacheModule from '../shared/cache/cache.module';
+import { ValidatorsModule } from '../shared/validators/validators.module';
 import { UserRepository } from './users.repository';
 import { UsersService } from './users.service';
 import { UsersController } from './web/users.controller';
 
 @Module({
-  imports: [CacheModule, DatabaseModule],
+  imports: [CacheModule, DatabaseModule, ValidatorsModule],
   providers: [UsersService, UserRepository],
   controllers: [UsersController],
 })

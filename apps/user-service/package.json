@@ -22,15 +22,15 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@luka/email-service-client": "workspace:^",
     "@liaoliaots/nestjs-redis": "^10.0.0",
+    "@luka/email-service-client": "workspace:^",
     "@luka/eslint-config": "workspace:^",
+    "@luka/monads": "workspace:^",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.3",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/swagger": "11.2.5",
-    "@luka/monads": "workspace:^",
     "cache-manager": "^7.2.8",
     "cache-manager-redis-yet": "^5.1.5",
     "class-transformer": "^0.5.1",
@@ -41,7 +41,8 @@
     "nestjs-pino": "^4.5.0",
     "pg": "^8.18.0",
     "reflect-metadata": "^0.2.2",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "ts-pattern": "^5.9.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

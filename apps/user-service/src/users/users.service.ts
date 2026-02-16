@@ -23,6 +23,23 @@ export class UsersService {
       configService.getOrThrow<string>('EMAIL_SERVICE_URL');
   }
 
+  async getUser({
+    email,
+    userId,
+  }: {
+    email?: string;
+    userId?: UUID;
+  }): Promise<Either<WithReason, User>> {
+    if (email) {
+      return this.getByEmail(email);
+    }
+    if (userId) {
+      return this.getById(userId);
+    } else {
+      return leftWithReason('No options provided');
+    }
+  }
+
   async getByEmail(email: string): Promise<Either<WithReason, User>> {
     return this.repository.getByEmail(email);
   }

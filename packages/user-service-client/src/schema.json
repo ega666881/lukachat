@@ -1,0 +1,104 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/users": {
+      "get": {
+        "operationId": "UsersController_getUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "ID пользователя",
+            "schema": {
+              "format": "uuid",
+              "example": "550e8400-e29b-41d4-a716-446655440000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GetUserResponse" }
+              }
+            }
+          }
+        },
+        "tags": ["Users"]
+      }
+    },
+    "/users/email-auth": {
+      "post": {
+        "operationId": "UsersController_emailAuth",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestEmailCodeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestEmailCodeResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Users"]
+      }
+    }
+  },
+  "info": {
+    "title": "User Service",
+    "description": "HTTP API for user and subscription management",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "UserDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "id": { "type": "string" }
+        },
+        "required": ["email", "id"]
+      },
+      "GetUserResponse": {
+        "type": "object",
+        "properties": { "user": { "$ref": "#/components/schemas/UserDto" } },
+        "required": ["user"]
+      },
+      "RequestEmailCodeRequest": {
+        "type": "object",
+        "properties": { "email": { "type": "string" } },
+        "required": ["email"]
+      },
+      "RequestEmailCodeResponse": {
+        "type": "object",
+        "properties": { "success": { "type": "boolean" } },
+        "required": ["success"]
+      }
+    }
+  }
+}
