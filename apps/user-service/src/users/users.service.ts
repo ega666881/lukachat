@@ -13,6 +13,7 @@ import { UserRepository } from './users.repository';
 @Injectable()
 export class UsersService {
   private emailServiceClient = new EmailServiceClient();
+  private readonly CODE_VALID_SECONDS = 15 * 60;
 
   constructor(
     private readonly cacheService: CacheService,
@@ -21,6 +22,20 @@ export class UsersService {
   ) {
     this.emailServiceClient.baseUrl =
       configService.getOrThrow<string>('EMAIL_SERVICE_URL');
+  }
+
+  private generateRandomCode(): string {
+    return Math.random().toString().slice(2, 8);
+  }
+
+  async deleteEmailCode(email: string) {
+    await this.cacheService.deleteKey(`email-code:${email}`);
+  }
+
+  async verifyEmailCode(email: string, code: string) {
+    const redisCode = await this.cacheService.getKey(`email-code:${email}`);
+
+    return redisCode === code;
   }
 
   async getUser({
@@ -69,13 +84,7 @@ export class UsersService {
   async requestEmailCode(
     email: string,
   ): Promise<Either<WithReason, SendAuthCodeResponse>> {
-    const getOrCreateUserResult = await this.getOrCreateUser(email);
-
-    if (!getOrCreateUserResult.ok) {
-      return leftWithReason(getOrCreateUserResult.data.reason);
-    }
-
-    const code = '12345';
+    const code = this.generateRandomCode();
     const requestAuthCodeResult =
       await this.emailServiceClient.mail.mailControllerSendAuthCode({
         email,
@@ -85,6 +94,12 @@ export class UsersService {
     if (!requestAuthCodeResult.ok) {
       return leftWithReason(requestAuthCodeResult.error.message);
     }
+
+    this.cacheService.setKey(
+      `email-code:${email}`,
+      code,
+      this.CODE_VALID_SECONDS,
+    );
 
     return right(requestAuthCodeResult.data);
   }

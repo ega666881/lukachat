@@ -35,6 +35,7 @@ function RootLayout() {
             name="screens/chats/chatsScreen"
             options={{
               title: "Чаты",
+              headerBackVisible: false,
               headerStyle: { backgroundColor: "#121212" },
               headerTintColor: "#fff",
               contentStyle: { backgroundColor: "#1E1E1E" },

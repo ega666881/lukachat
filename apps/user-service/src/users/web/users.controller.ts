@@ -35,9 +35,9 @@ export class UsersController {
     return { user: User.toResponse(getUserResult.payload) };
   }
 
-  @Post('email-auth')
+  @Post('request-email-code')
   @ApiOkResponse({ type: RequestEmailCodeResponse })
-  async emailAuth(@Body() dto: RequestEmailCodeRequest) {
+  async requestEmailCode(@Body() dto: RequestEmailCodeRequest) {
     const requestEmailCodeRequest = await this.service.requestEmailCode(
       dto.email,
     );

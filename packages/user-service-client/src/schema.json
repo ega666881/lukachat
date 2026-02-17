@@ -36,9 +36,9 @@
         "tags": ["Users"]
       }
     },
-    "/users/email-auth": {
+    "/users/request-email-code": {
       "post": {
-        "operationId": "UsersController_emailAuth",
+        "operationId": "UsersController_requestEmailCode",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -63,6 +63,31 @@
           }
         },
         "tags": ["Users"]
+      }
+    },
+    "/auth/email-auth": {
+      "post": {
+        "operationId": "AuthController_emailAuth",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EmailAuthRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EmailAuthResponse" }
+              }
+            }
+          }
+        },
+        "tags": ["Auth"]
       }
     }
   },
@@ -98,6 +123,23 @@
         "type": "object",
         "properties": { "success": { "type": "boolean" } },
         "required": ["success"]
+      },
+      "EmailAuthRequest": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "code": { "type": "string" }
+        },
+        "required": ["email", "code"]
+      },
+      "EmailAuthResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": { "type": "string" },
+          "refreshToken": { "type": "string" },
+          "userId": { "type": "string" }
+        },
+        "required": ["accessToken", "refreshToken", "userId"]
       }
     }
   }

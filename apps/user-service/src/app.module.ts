@@ -2,6 +2,7 @@ import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
+import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import CacheModule from './shared/cache/cache.module';
 import { UsersModule } from './users/users.module';
@@ -17,6 +18,7 @@ import { UsersModule } from './users/users.module';
     DatabaseModule,
     UsersModule,
     RedisModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

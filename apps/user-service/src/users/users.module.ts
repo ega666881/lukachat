@@ -10,5 +10,6 @@ import { UsersController } from './web/users.controller';
   imports: [CacheModule, DatabaseModule, ValidatorsModule],
   providers: [UsersService, UserRepository],
   controllers: [UsersController],
+  exports: [UsersService],
 })
 export class UsersModule {}

@@ -26,6 +26,17 @@ export interface RequestEmailCodeResponse {
   success: boolean;
 }
 
+export interface EmailAuthRequest {
+  email: string;
+  code: string;
+}
+
+export interface EmailAuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  userId: string;
+}
+
 export interface UsersControllerGetUserParams {
   /**
    * ID пользователя
@@ -38,7 +49,9 @@ export interface UsersControllerGetUserParams {
 
 export type UsersControllerGetUserData = GetUserResponse;
 
-export type UsersControllerEmailAuthData = RequestEmailCodeResponse;
+export type UsersControllerRequestEmailCodeData = RequestEmailCodeResponse;
+
+export type AuthControllerEmailAuthData = EmailAuthResponse;
 
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
@@ -278,12 +291,30 @@ export class UserServiceClient<SecurityDataType extends unknown> extends HttpCli
      * No description
      *
      * @tags Users
-     * @name UsersControllerEmailAuth
-     * @request POST:/users/email-auth
+     * @name UsersControllerRequestEmailCode
+     * @request POST:/users/request-email-code
      */
-    usersControllerEmailAuth: (data: RequestEmailCodeRequest, params: RequestParams = {}) =>
-      this.request<UsersControllerEmailAuthData, any>({
-        path: `/users/email-auth`,
+    usersControllerRequestEmailCode: (data: RequestEmailCodeRequest, params: RequestParams = {}) =>
+      this.request<UsersControllerRequestEmailCodeData, any>({
+        path: `/users/request-email-code`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  auth = {
+    /**
+     * No description
+     *
+     * @tags Auth
+     * @name AuthControllerEmailAuth
+     * @request POST:/auth/email-auth
+     */
+    authControllerEmailAuth: (data: EmailAuthRequest, params: RequestParams = {}) =>
+      this.request<AuthControllerEmailAuthData, any>({
+        path: `/auth/email-auth`,
         method: "POST",
         body: data,
         type: ContentType.Json,

@@ -35,4 +35,14 @@ export default StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: "#808080",
   },
+  emailCodeTitle: {
+    color: "#ffffff",
+    fontSize: 15,
+  },
+  emailCodeContainer: {
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 20,
+  },
 });

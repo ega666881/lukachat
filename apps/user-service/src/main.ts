@@ -18,6 +18,14 @@ async function bootstrap() {
     deepScanRoutes: true,
   });
 
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
+
   SwaggerModule.setup('swagger', app, document);
   app
     .getHttpAdapter()

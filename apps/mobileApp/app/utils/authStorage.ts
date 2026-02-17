@@ -1,20 +1,41 @@
+import { AuthCredentials } from "@luka/models";
 import * as SecureStore from "expo-secure-store";
 
-const TOKEN_KEY = "jwt_token";
+enum TOKEN_KEY {
+  ACCESS_TOKEN = "accessToken",
+  REFRESH_TOKEN = "refreshToken",
+  USER_ID = "userId",
+}
+
+const getData = () => {
+  return Promise.all([
+    SecureStore.getItemAsync(TOKEN_KEY.ACCESS_TOKEN),
+    SecureStore.getItemAsync(TOKEN_KEY.REFRESH_TOKEN),
+    SecureStore.getItemAsync(TOKEN_KEY.USER_ID),
+  ]);
+};
 
 export const authStorage = {
-  saveToken: async (token: string): Promise<void> => {
+  saveToken: async (authCredentials: AuthCredentials): Promise<void> => {
     try {
-      await SecureStore.setItemAsync(TOKEN_KEY, token);
+      const { accessToken, refreshToken, userId } = authCredentials;
+      await Promise.all([
+        SecureStore.setItemAsync(TOKEN_KEY.ACCESS_TOKEN, accessToken),
+        SecureStore.setItemAsync(TOKEN_KEY.REFRESH_TOKEN, refreshToken),
+        SecureStore.setItemAsync(TOKEN_KEY.USER_ID, userId),
+      ]);
     } catch (error) {
       throw error;
     }
   },
 
-  getToken: async (): Promise<string | null> => {
+  getToken: async (): Promise<AuthCredentials | null> => {
     try {
-      const token = await SecureStore.getItemAsync(TOKEN_KEY);
-      return token;
+      const [accessToken, refreshToken, userId] = await getData();
+      if (accessToken && refreshToken && userId) {
+        return new AuthCredentials(userId, accessToken, refreshToken);
+      }
+      return null;
     } catch {
       return null;
     }
@@ -22,7 +43,11 @@ export const authStorage = {
 
   deleteToken: async (): Promise<void> => {
     try {
-      await SecureStore.deleteItemAsync(TOKEN_KEY);
+      await Promise.all([
+        SecureStore.deleteItemAsync(TOKEN_KEY.ACCESS_TOKEN),
+        SecureStore.deleteItemAsync(TOKEN_KEY.REFRESH_TOKEN),
+        SecureStore.deleteItemAsync(TOKEN_KEY.USER_ID),
+      ]);
       console.log("🗑️ Токен удалён");
     } catch (error) {
       console.error("❌ Ошибка удаления токена:", error);
@@ -31,7 +56,7 @@ export const authStorage = {
 
   hasToken: async (): Promise<boolean> => {
     try {
-      const token = await SecureStore.getItemAsync(TOKEN_KEY);
+      const token = await SecureStore.getItemAsync(TOKEN_KEY.ACCESS_TOKEN);
       return !!token;
     } catch {
       return false;

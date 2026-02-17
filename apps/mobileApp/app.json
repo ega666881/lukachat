@@ -18,6 +18,11 @@
         "backgroundImage": "./assets/images/lukachatLogo.png",
         "monochromeImage": "./assets/images/lukachatLogo.png"
       },
+      "androidManifest": {
+        "application": {
+          "usesCleartextTraffic": true
+        }
+      },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.luka.lukaChat"
