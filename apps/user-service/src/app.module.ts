@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import CacheModule from './shared/cache/cache.module';
 import { UsersModule } from './users/users.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     RedisModule,
     AuthModule,
+    ChatModule,
   ],
 })
 export class AppModule {}

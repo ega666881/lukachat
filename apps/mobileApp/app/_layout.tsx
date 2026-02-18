@@ -41,6 +41,17 @@ function RootLayout() {
               contentStyle: { backgroundColor: "#1E1E1E" },
             }}
           />
+          <Stack.Screen
+            name="screens/error/errorScreen"
+            options={{
+              title: "Ошибка",
+              headerBackVisible: false,
+              headerShown: false,
+              headerStyle: { backgroundColor: "#121212" },
+              headerTintColor: "#fff",
+              contentStyle: { backgroundColor: "#1E1E1E" },
+            }}
+          />
         </Stack>
       </StoreProvider>
     </ThemeProvider>

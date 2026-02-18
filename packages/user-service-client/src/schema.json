@@ -89,6 +89,72 @@
         },
         "tags": ["Auth"]
       }
+    },
+    "/chat/get-chats-list": {
+      "get": {
+        "operationId": "ChatController_getChatsList",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GetChatListResponse" }
+              }
+            }
+          }
+        },
+        "tags": ["Chat"]
+      }
+    },
+    "/chat/get-chat-by-id": {
+      "get": {
+        "operationId": "ChatController_getChatById",
+        "parameters": [
+          {
+            "name": "chatId",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GetChatByIdResponse" }
+              }
+            }
+          }
+        },
+        "tags": ["Chat"]
+      }
+    },
+    "/chat/send-message": {
+      "post": {
+        "operationId": "ChatController_sendMessage",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SendMessageRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SendMessageResponse" }
+              }
+            }
+          }
+        },
+        "tags": ["Chat"]
+      }
     }
   },
   "info": {
@@ -100,6 +166,9 @@
   "tags": [],
   "servers": [],
   "components": {
+    "securitySchemes": {
+      "bearer": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" }
+    },
     "schemas": {
       "UserDto": {
         "type": "object",
@@ -140,7 +209,62 @@
           "userId": { "type": "string" }
         },
         "required": ["accessToken", "refreshToken", "userId"]
+      },
+      "MessageDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "text": { "type": "string" },
+          "userId": { "type": "string" },
+          "chatId": { "type": "string" },
+          "createdAt": { "format": "date-time", "type": "string" }
+        },
+        "required": ["id", "text", "userId", "chatId", "createdAt"]
+      },
+      "ChatDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "messages": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MessageDto" }
+          }
+        },
+        "required": ["id", "type", "createdAt", "messages"]
+      },
+      "GetChatListResponse": {
+        "type": "object",
+        "properties": {
+          "chats": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ChatDto" }
+          }
+        },
+        "required": ["chats"]
+      },
+      "GetChatByIdResponse": {
+        "type": "object",
+        "properties": { "chat": { "$ref": "#/components/schemas/ChatDto" } },
+        "required": ["chat"]
+      },
+      "SendMessageRequest": {
+        "type": "object",
+        "properties": {
+          "text": { "type": "string" },
+          "chatId": { "type": "string" }
+        },
+        "required": ["text", "chatId"]
+      },
+      "SendMessageResponse": {
+        "type": "object",
+        "properties": {
+          "message": { "$ref": "#/components/schemas/MessageDto" }
+        },
+        "required": ["message"]
       }
     }
-  }
+  },
+  "security": [{ "bearer": [] }]
 }

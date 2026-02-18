@@ -12,6 +12,12 @@ async function bootstrap() {
     .setTitle('User Service')
     .setDescription('HTTP API for user and subscription management')
     .setVersion('1.0.0')
+    .addSecurity('bearer', {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    })
+    .addSecurityRequirements('bearer')
     .build();
 
   const document = SwaggerModule.createDocument(app, config, {

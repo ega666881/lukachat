@@ -8,6 +8,9 @@
   "scripts": {
     "build": "tsc"
   },
+  "dependencies": {
+    "@luka/enums": "workspace:^"
+  },
   "exports": {
     ".": {
       "import": "./dist/index.es.js",

@@ -37,6 +37,40 @@ export interface EmailAuthResponse {
   userId: string;
 }
 
+export interface MessageDto {
+  id: string;
+  text: string;
+  userId: string;
+  chatId: string;
+  /** @format date-time */
+  createdAt: string;
+}
+
+export interface ChatDto {
+  id: string;
+  type: string;
+  /** @format date-time */
+  createdAt: string;
+  messages: MessageDto[];
+}
+
+export interface GetChatListResponse {
+  chats: ChatDto[];
+}
+
+export interface GetChatByIdResponse {
+  chat: ChatDto;
+}
+
+export interface SendMessageRequest {
+  text: string;
+  chatId: string;
+}
+
+export interface SendMessageResponse {
+  message: MessageDto;
+}
+
 export interface UsersControllerGetUserParams {
   /**
    * ID пользователя
@@ -52,6 +86,16 @@ export type UsersControllerGetUserData = GetUserResponse;
 export type UsersControllerRequestEmailCodeData = RequestEmailCodeResponse;
 
 export type AuthControllerEmailAuthData = EmailAuthResponse;
+
+export type ChatControllerGetChatsListData = GetChatListResponse;
+
+export interface ChatControllerGetChatByIdParams {
+  chatId: string;
+}
+
+export type ChatControllerGetChatByIdData = GetChatByIdResponse;
+
+export type ChatControllerSendMessageData = SendMessageResponse;
 
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
@@ -277,12 +321,14 @@ export class UserServiceClient<SecurityDataType extends unknown> extends HttpCli
      * @tags Users
      * @name UsersControllerGetUser
      * @request GET:/users
+     * @secure
      */
     usersControllerGetUser: (query: UsersControllerGetUserParams, params: RequestParams = {}) =>
       this.request<UsersControllerGetUserData, any>({
         path: `/users`,
         method: "GET",
         query: query,
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -293,12 +339,14 @@ export class UserServiceClient<SecurityDataType extends unknown> extends HttpCli
      * @tags Users
      * @name UsersControllerRequestEmailCode
      * @request POST:/users/request-email-code
+     * @secure
      */
     usersControllerRequestEmailCode: (data: RequestEmailCodeRequest, params: RequestParams = {}) =>
       this.request<UsersControllerRequestEmailCodeData, any>({
         path: `/users/request-email-code`,
         method: "POST",
         body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -311,12 +359,69 @@ export class UserServiceClient<SecurityDataType extends unknown> extends HttpCli
      * @tags Auth
      * @name AuthControllerEmailAuth
      * @request POST:/auth/email-auth
+     * @secure
      */
     authControllerEmailAuth: (data: EmailAuthRequest, params: RequestParams = {}) =>
       this.request<AuthControllerEmailAuthData, any>({
         path: `/auth/email-auth`,
         method: "POST",
         body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  chat = {
+    /**
+     * No description
+     *
+     * @tags Chat
+     * @name ChatControllerGetChatsList
+     * @request GET:/chat/get-chats-list
+     * @secure
+     */
+    chatControllerGetChatsList: (params: RequestParams = {}) =>
+      this.request<ChatControllerGetChatsListData, any>({
+        path: `/chat/get-chats-list`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Chat
+     * @name ChatControllerGetChatById
+     * @request GET:/chat/get-chat-by-id
+     * @secure
+     */
+    chatControllerGetChatById: (query: ChatControllerGetChatByIdParams, params: RequestParams = {}) =>
+      this.request<ChatControllerGetChatByIdData, any>({
+        path: `/chat/get-chat-by-id`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Chat
+     * @name ChatControllerSendMessage
+     * @request POST:/chat/send-message
+     * @secure
+     */
+    chatControllerSendMessage: (data: SendMessageRequest, params: RequestParams = {}) =>
+      this.request<ChatControllerSendMessageData, any>({
+        path: `/chat/send-message`,
+        method: "POST",
+        body: data,
+        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,

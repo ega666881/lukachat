@@ -10,7 +10,10 @@
     "clean:all": "rm -rf node_modules && find . -name \"node_modules\" -type d -prune -exec rm -rf '{}' +"
   },
   "devDependencies": {
-    "turbo": "latest"
+    "turbo": "latest",
+    "@nestjs/swagger": "^7.0.0",
+    "class-validator": "^0.14.0",
+    "class-transformer": "^0.5.1"
   },
   "engines": {
     "node": ">=18.0.0",

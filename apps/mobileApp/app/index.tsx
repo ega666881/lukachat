@@ -4,7 +4,6 @@ import { useStore } from "../stores";
 
 function HomeScreen() {
   const { clientStore } = useStore();
-  // authStorage.deleteToken();
 
   return clientStore.isLogin ? (
     <Redirect href="/screens/chats/chatsScreen" />
