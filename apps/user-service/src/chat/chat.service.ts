@@ -1,17 +1,22 @@
 import {
   ChatServiceClient,
-  GetChatsResponse,
   SendMessageResponse,
 } from '@luka/chat-service-client';
+import { ChatType } from '@luka/enums';
 import { Either, leftWithReason, right, WithReason } from '@luka/monads';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { UsersService } from '../users/users.service';
+import Chat from './models/chat.modeL';
 
 @Injectable()
 export class ChatService {
   private chatService!: ChatServiceClient<never>;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly usersService: UsersService,
+  ) {
     this.chatService = new ChatServiceClient({
       baseUrl: configService.getOrThrow<string>('CHAT_SERVICE_URL'),
     });
@@ -27,9 +32,7 @@ export class ChatService {
     return right(getChatResponse.data);
   }
 
-  async getChatLists(
-    userId: string,
-  ): Promise<Either<WithReason, GetChatsResponse>> {
+  async getChatLists(userId: string): Promise<Either<WithReason, Chat[]>> {
     const getChatListResult =
       await this.chatService.chat.chatControllerGetChats({ userId });
 
@@ -37,7 +40,32 @@ export class ChatService {
       return leftWithReason(getChatListResult.error.message);
     }
 
-    return right(getChatListResult.data);
+    const { chats } = getChatListResult.data;
+
+    const allUserIds = [
+      ...new Set(chats.flatMap((item) => item.chatUsers || [])),
+    ];
+
+    const users = await this.usersService.getManyUsersByIds(allUserIds);
+
+    const usersMap = new Map<string, (typeof users)[number]>();
+    for (const user of users) {
+      usersMap.set(user.id, user);
+    }
+
+    const result = chats.map((item) => ({
+      chat: {
+        id: item.id,
+        type: item.type as ChatType,
+        createdAt: item.createdAt,
+      },
+      messages: item.messages,
+      chatUsers: (item.chatUsers || [])
+        .map((userId) => usersMap.get(userId))
+        .filter((user): user is NonNullable<typeof user> => user !== undefined),
+    }));
+
+    return right(Chat.fromResponses(result));
   }
 
   async sendMessage(

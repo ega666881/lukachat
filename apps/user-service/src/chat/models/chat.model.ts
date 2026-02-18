@@ -1,7 +1,9 @@
 import { ChatType } from '@luka/enums';
 import { UUID } from 'crypto';
-import { ChatsTable } from '../schemas/chats.schema';
-import { MessagesTable } from '../schemas/messages.schema';
+
+import User from '../../users/models/users.model';
+import { ChatDto } from '../web/dto/chat.dto';
+import { MessageDto } from '../web/dto/message.dto';
 import Message from './message.model';
 
 export default class Chat {
@@ -9,43 +11,45 @@ export default class Chat {
   readonly type: ChatType;
   readonly createdAt: Date;
   readonly messages?: Message[];
-  readonly chatUsers: string[];
+  readonly chatUsers: User[];
 
   constructor(data: {
     id: UUID;
     type: ChatType;
-    createdAt: Date;
+    createdAt: string;
     messages?: Message[];
-    chatUsers: string[];
+    chatUsers: User[];
   }) {
     this.id = data.id;
     this.type = data.type;
     this.messages = data.messages;
     this.chatUsers = data.chatUsers;
-    this.createdAt = data.createdAt;
+    this.createdAt = new Date(data.createdAt);
   }
 
-  static fromTables(
+  static fromResponses(
     tables: {
-      chat: ChatsTable;
-      messages: MessagesTable[];
-      chatUsers: string[];
+      chat: ChatDto;
+      messages: MessageDto[];
+      chatUsers: User[];
     }[],
   ) {
-    return tables.map((t) => Chat.fromTable(t.chat, t.messages, t.chatUsers));
+    return tables.map((t) =>
+      Chat.fromResponse(t.chat, t.messages, t.chatUsers),
+    );
   }
 
-  static fromTable(
-    chat: ChatsTable,
-    messages: MessagesTable[],
-    chatUsers: string[],
+  static fromResponse(
+    chat: ChatDto,
+    messages: MessageDto[],
+    chatUsers: User[],
   ) {
     return new Chat({
       id: chat.id as UUID,
       type: chat.type,
       createdAt: chat.createdAt!,
       chatUsers,
-      messages: Message.fromTables(messages),
+      messages: Message.fromResponses(messages),
     });
   }
 
@@ -54,8 +58,6 @@ export default class Chat {
       id: chat.id,
       type: chat.type,
       createdAt: chat.createdAt,
-      messages: Message.toResponseMany(chat.messages!),
-      chatUsers: chat.chatUsers,
     };
   }
 

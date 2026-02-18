@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { IsArray, IsNotEmpty, IsUUID } from 'class-validator';
 import { ChatDto } from './chat.dto';
 
 export class GetChatsRequest {
@@ -10,7 +10,8 @@ export class GetChatsRequest {
 }
 
 export class GetChatsResponse {
-  @ApiProperty({ type: ChatDto })
+  @ApiProperty({ type: ChatDto, isArray: true })
+  @IsArray()
   @IsNotEmpty()
   chats!: ChatDto[];
 }

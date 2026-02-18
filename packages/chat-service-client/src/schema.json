@@ -25,7 +25,7 @@
         "tags": ["Chat"]
       }
     },
-    "/chat/get-chat-by-id": {
+    "/chat/get-chat": {
       "get": {
         "operationId": "ChatController_getChatById",
         "parameters": [
@@ -115,10 +115,42 @@
   "servers": [],
   "components": {
     "schemas": {
+      "ChatType": {
+        "type": "string",
+        "enum": ["private_chat", "group_chat", "channel_chat"]
+      },
+      "MessageDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "text": { "type": "string" },
+          "userId": { "type": "string" },
+          "chatId": { "type": "string" },
+          "createdAt": { "type": "string" }
+        },
+        "required": ["id", "text", "userId", "chatId", "createdAt"]
+      },
+      "ChatDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "allOf": [{ "$ref": "#/components/schemas/ChatType" }] },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "messages": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MessageDto" }
+          },
+          "chatUsers": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["id", "type", "createdAt", "messages", "chatUsers"]
+      },
       "GetChatsResponse": {
         "type": "object",
         "properties": {
-          "chats": { "type": "array", "items": { "type": "string" } }
+          "chats": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ChatDto" }
+          }
         },
         "required": ["chats"]
       },
@@ -130,17 +162,6 @@
           "text": { "type": "string" }
         },
         "required": ["userId", "chatId", "text"]
-      },
-      "MessageDto": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "string" },
-          "text": { "type": "string" },
-          "userId": { "type": "string" },
-          "chatId": { "type": "string" },
-          "createdAt": { "format": "date-time", "type": "string" }
-        },
-        "required": ["id", "text", "userId", "chatId", "createdAt"]
       },
       "SendMessageResponse": {
         "type": "object",
@@ -156,16 +177,6 @@
           "addingUserIds": { "type": "array", "items": { "type": "string" } }
         },
         "required": ["type", "addingUserIds"]
-      },
-      "ChatDto": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "string" },
-          "type": { "type": "string" },
-          "createdAt": { "format": "date-time", "type": "string" },
-          "messages": { "type": "array", "items": { "type": "string" } }
-        },
-        "required": ["id", "type", "createdAt", "messages"]
       },
       "CreateChatResponse": {
         "type": "object",

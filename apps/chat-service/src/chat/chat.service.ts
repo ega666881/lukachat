@@ -55,6 +55,10 @@ export class ChatService {
       return leftWithReason(addUsersToChatResult.data.reason);
     }
 
+    for (const addingUserId of addingUserIds) {
+      chat.chatUsers.push(addingUserId);
+    }
+
     return right(chat);
   }
 }

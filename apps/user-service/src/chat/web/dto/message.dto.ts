@@ -28,5 +28,5 @@ export class MessageDto {
   @IsDate()
   @Transform(({ value }) => (value instanceof Date ? value : new Date(value)))
   @Expose()
-  readonly createdAt: Date;
+  readonly createdAt: string;
 }

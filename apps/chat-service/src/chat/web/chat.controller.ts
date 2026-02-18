@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { ChatService } from '../chat.service';
+import Chat from '../models/chat.model';
 import { CreateChatRequest, CreateChatResponse } from './dto/create-chat.dto';
 import { GetChatByIdRequest } from './dto/get-chat-by-id.dto';
 import { GetChatsRequest, GetChatsResponse } from './dto/get-chats.dto';
@@ -25,7 +26,9 @@ export class ChatController {
   @ApiOkResponse({ type: GetChatsResponse })
   async getChats(@Query() dto: GetChatsRequest) {
     const { userId } = dto;
-    return this.service.getChatsList(userId);
+    const chats = await this.service.getChatsList(userId);
+
+    return { chats: Chat.toResponseMany(chats) };
   }
 
   @Get('/get-chat')

@@ -2,7 +2,7 @@ import { ChatType } from '@luka/enums';
 import { Either, leftWithReason, right, WithReason } from '@luka/monads';
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { and, desc, eq, max } from 'drizzle-orm';
+import { and, desc, eq, inArray, max } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { R } from '../shared/enums/reason.enum';
 import Chat from './models/chat.model';
@@ -32,6 +32,15 @@ export class ChatRepository {
 
     const { chat } = result[0];
 
+    const chatUsersData = await this.db
+      .select({
+        userId: chatsUsersTable.userId,
+      })
+      .from(chatsUsersTable)
+      .where(eq(chatsUsersTable.chatId, chatId));
+
+    const chatUsers = chatUsersData.map((item) => item.userId);
+
     const messages = result
       .map((item) => item.messages)
       .filter(
@@ -39,7 +48,7 @@ export class ChatRepository {
           msg !== null && msg !== undefined,
       );
 
-    return right(Chat.fromTable(chat, messages));
+    return right(Chat.fromTable(chat, messages, chatUsers));
   }
 
   async createMessage(
@@ -77,7 +86,7 @@ export class ChatRepository {
 
     const [insertedChat] = result;
 
-    return right(Chat.fromTable(insertedChat, []));
+    return right(Chat.fromTable(insertedChat, [], []));
   }
 
   async addUsersToChat(
@@ -106,7 +115,7 @@ export class ChatRepository {
       .groupBy(messagesTable.chatId)
       .as('latest_message');
 
-    const result = await this.db
+    const chatsResult = await this.db
       .select({
         chat: chatsTable,
         lastMessage: messagesTable,
@@ -126,11 +135,34 @@ export class ChatRepository {
       )
       .where(eq(chatsUsersTable.userId, userId));
 
-    const filtredResult = result.map((item) => ({
+    const chatIds = [...new Set(chatsResult.map((item) => item.chat.id))];
+
+    let chatUsersData: Array<{ chatId: string; userId: string }> = [];
+
+    if (chatIds.length > 0) {
+      chatUsersData = await this.db
+        .select({
+          chatId: chatsUsersTable.chatId,
+          userId: chatsUsersTable.userId,
+        })
+        .from(chatsUsersTable)
+        .where(inArray(chatsUsersTable.chatId, chatIds));
+    }
+
+    const usersByChatId = new Map<string, string[]>();
+    for (const { chatId, userId } of chatUsersData) {
+      if (!usersByChatId.has(chatId)) {
+        usersByChatId.set(chatId, []);
+      }
+      usersByChatId.get(chatId)!.push(userId);
+    }
+
+    const filteredResult = chatsResult.map((item) => ({
       chat: item.chat,
       messages: item.lastMessage ? [item.lastMessage] : [],
+      chatUsers: usersByChatId.get(item.chat.id) || [],
     }));
 
-    return Chat.fromTables(filtredResult);
+    return Chat.fromTables(filteredResult);
   }
 }

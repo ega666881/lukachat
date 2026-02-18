@@ -3,7 +3,9 @@ import {
   IsArray,
   IsDate,
   IsEnum,
+  IsNotEmpty,
   IsOptional,
+  IsString,
   IsUUID,
   ValidateNested,
 } from 'class-validator';
@@ -18,7 +20,7 @@ export class ChatDto {
   @Expose()
   readonly id: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: ChatType, enumName: 'ChatType' })
   @IsEnum(ChatType)
   @Expose()
   readonly type: ChatType;
@@ -29,11 +31,17 @@ export class ChatDto {
   @Expose()
   readonly createdAt: Date;
 
-  @ApiProperty()
+  @ApiProperty({ type: MessageDto, isArray: true })
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => MessageDto)
   @Expose()
   readonly messages?: MessageDto[];
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString({ each: true })
+  @IsArray()
+  readonly chatUsers: string[];
 }

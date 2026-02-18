@@ -1,7 +1,7 @@
 import { Either, leftWithReason, right, WithReason } from '@luka/monads';
 import { Injectable } from '@nestjs/common';
 import { UUID } from 'crypto';
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import User from './models/users.model';
 import { usersTable } from './schemas/users.schema';
@@ -22,6 +22,15 @@ export class UserRepository {
     }
 
     return right(User.fromTable(result[0]));
+  }
+
+  async getByIdMany(ids: string[]): Promise<User[]> {
+    const result = await this.db
+      .select()
+      .from(usersTable)
+      .where(inArray(usersTable.id, ids));
+
+    return User.fromTables(result);
   }
 
   async getById(id: UUID): Promise<Either<WithReason, User>> {

@@ -27,7 +27,7 @@ export class ChatDto {
   @IsDate()
   @Transform(({ value }) => (value instanceof Date ? value : new Date(value)))
   @Expose()
-  readonly createdAt: Date;
+  readonly createdAt: string;
 
   @ApiProperty({ type: MessageDto, isArray: true })
   @IsOptional()

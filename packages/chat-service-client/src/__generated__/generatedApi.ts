@@ -9,23 +9,33 @@
  * ---------------------------------------------------------------
  */
 
-export interface GetChatsResponse {
-  chats: string[];
-}
-
-export interface SendMessageRequest {
-  userId: string;
-  chatId: string;
-  text: string;
-}
+export type ChatType = "private_chat" | "group_chat" | "channel_chat";
 
 export interface MessageDto {
   id: string;
   text: string;
   userId: string;
   chatId: string;
+  createdAt: string;
+}
+
+export interface ChatDto {
+  id: string;
+  type: ChatType;
   /** @format date-time */
   createdAt: string;
+  messages: MessageDto[];
+  chatUsers: string[];
+}
+
+export interface GetChatsResponse {
+  chats: ChatDto[];
+}
+
+export interface SendMessageRequest {
+  userId: string;
+  chatId: string;
+  text: string;
 }
 
 export interface SendMessageResponse {
@@ -35,14 +45,6 @@ export interface SendMessageResponse {
 export interface CreateChatRequest {
   type: string;
   addingUserIds: string[];
-}
-
-export interface ChatDto {
-  id: string;
-  type: string;
-  /** @format date-time */
-  createdAt: string;
-  messages: string[];
 }
 
 export interface CreateChatResponse {
@@ -309,11 +311,11 @@ export class ChatServiceClient<SecurityDataType extends unknown> extends HttpCli
      *
      * @tags Chat
      * @name ChatControllerGetChatById
-     * @request GET:/chat/get-chat-by-id
+     * @request GET:/chat/get-chat
      */
     chatControllerGetChatById: (query: ChatControllerGetChatByIdParams, params: RequestParams = {}) =>
       this.request<ChatControllerGetChatByIdData, any>({
-        path: `/chat/get-chat-by-id`,
+        path: `/chat/get-chat`,
         method: "GET",
         query: query,
         format: "json",

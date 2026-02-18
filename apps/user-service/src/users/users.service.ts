@@ -38,6 +38,10 @@ export class UsersService {
     return redisCode === code;
   }
 
+  async getManyUsersByIds(ids: string[]): Promise<User[]> {
+    return this.repository.getByIdMany(ids);
+  }
+
   async getUser({
     email,
     userId,
