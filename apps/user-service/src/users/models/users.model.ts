@@ -5,12 +5,19 @@ import { UserDto } from '../web/dto/user.dto';
 export default class User {
   readonly id: UUID;
   readonly email: string;
+  readonly avatarUrl: string | null;
   readonly createdAt: Date;
 
-  constructor(data: { id: UUID; email: string; createdAt: Date }) {
+  constructor(data: {
+    id: UUID;
+    email: string;
+    createdAt: Date;
+    avatarUrl: string | null;
+  }) {
     this.id = data.id;
     this.email = data.email;
     this.createdAt = data.createdAt;
+    this.avatarUrl = data.avatarUrl;
   }
 
   static fromTables(tables: UsersTable[]) {
@@ -22,6 +29,7 @@ export default class User {
       id: table.id as UUID,
       email: table.email ?? undefined,
       createdAt: table.createdAt!,
+      avatarUrl: table.avatarUrl,
     });
   }
 

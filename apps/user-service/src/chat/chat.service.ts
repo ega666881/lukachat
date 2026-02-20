@@ -7,7 +7,7 @@ import { Either, leftWithReason, right, WithReason } from '@luka/monads';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
-import Chat from './models/chat.modeL';
+import Chat from './models/chat.model';
 
 @Injectable()
 export class ChatService {

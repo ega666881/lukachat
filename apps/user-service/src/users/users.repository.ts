@@ -24,6 +24,15 @@ export class UserRepository {
     return right(User.fromTable(result[0]));
   }
 
+  async updateAvatar(avatarUrl: string, userId: string): Promise<boolean> {
+    await this.db
+      .update(usersTable)
+      .set({ avatarUrl })
+      .where(eq(usersTable.id, userId));
+
+    return true;
+  }
+
   async getByIdMany(ids: string[]): Promise<User[]> {
     const result = await this.db
       .select()

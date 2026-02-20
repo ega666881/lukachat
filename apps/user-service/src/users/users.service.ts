@@ -6,6 +6,7 @@ import { Either, leftWithReason, right, WithReason } from '@luka/monads';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { randomUUID, UUID } from 'crypto';
+import { S3Service } from '../s3/s3.service';
 import CacheService from '../shared/cache/cache.service';
 import User from './models/users.model';
 import { UserRepository } from './users.repository';
@@ -19,6 +20,7 @@ export class UsersService {
     private readonly cacheService: CacheService,
     private readonly configService: ConfigService,
     private readonly repository: UserRepository,
+    private readonly s3Service: S3Service,
   ) {
     this.emailServiceClient.baseUrl =
       configService.getOrThrow<string>('EMAIL_SERVICE_URL');
@@ -74,6 +76,7 @@ export class UsersService {
         new User({
           id: randomUUID(),
           email,
+          avatarUrl: null,
           createdAt: new Date(),
         }),
       );
@@ -83,6 +86,17 @@ export class UsersService {
       return right(createUserResult.payload);
     }
     return right(getUserResult.payload);
+  }
+
+  async uploadAvatar(file: Express.Multer.File, userId: string) {
+    const fileUploadResult = await this.s3Service.uploadFile(file);
+
+    if (!fileUploadResult.ok) {
+      return leftWithReason(fileUploadResult.data.reason);
+    }
+    const fileUrl = fileUploadResult.payload;
+    await this.repository.updateAvatar(fileUrl, userId);
+    return right(fileUrl);
   }
 
   async requestEmailCode(

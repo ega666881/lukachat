@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import CacheModule from './shared/cache/cache.module';
 import { UsersModule } from './users/users.module';
 import { ChatModule } from './chat/chat.module';
+import { S3Module } from './s3/s3.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ChatModule } from './chat/chat.module';
     RedisModule,
     AuthModule,
     ChatModule,
+    S3Module,
   ],
 })
 export class AppModule {}
