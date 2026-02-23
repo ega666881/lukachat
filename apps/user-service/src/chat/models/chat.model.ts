@@ -1,8 +1,8 @@
 import { ChatType } from '@luka/enums';
 import { UUID } from 'crypto';
 
+import { ChatDto } from '@luka/chat-service-client';
 import User from '../../users/models/users.model';
-import { ChatDto } from '../web/dto/chat.dto';
 import { MessageDto } from '../web/dto/message.dto';
 import Message from './message.model';
 
@@ -29,7 +29,7 @@ export default class Chat {
 
   static fromResponses(
     tables: {
-      chat: ChatDto;
+      chat: Partial<ChatDto>;
       messages: MessageDto[];
       chatUsers: User[];
     }[],
@@ -40,13 +40,13 @@ export default class Chat {
   }
 
   static fromResponse(
-    chat: ChatDto,
+    chat: Partial<ChatDto>,
     messages: MessageDto[],
     chatUsers: User[],
   ) {
     return new Chat({
       id: chat.id as UUID,
-      type: chat.type,
+      type: chat.type as ChatType,
       createdAt: chat.createdAt!,
       chatUsers,
       messages: Message.fromResponses(messages),

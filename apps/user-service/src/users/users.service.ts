@@ -49,7 +49,7 @@ export class UsersService {
     userId,
   }: {
     email?: string;
-    userId?: UUID;
+    userId?: UUID | string;
   }): Promise<Either<WithReason, User>> {
     if (email) {
       return this.getByEmail(email);
@@ -65,7 +65,7 @@ export class UsersService {
     return this.repository.getByEmail(email);
   }
 
-  async getById(id: UUID): Promise<Either<WithReason, User>> {
+  async getById(id: UUID | string): Promise<Either<WithReason, User>> {
     return this.repository.getById(id);
   }
 

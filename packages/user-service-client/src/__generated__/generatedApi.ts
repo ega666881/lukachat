@@ -9,9 +9,14 @@
  * ---------------------------------------------------------------
  */
 
+export interface UploadAvatarResponse {
+  uploadedUrl: string;
+}
+
 export interface UserDto {
   email: string;
   id: string;
+  avatarUrl: string;
 }
 
 export interface GetUserResponse {
@@ -31,10 +36,21 @@ export interface EmailAuthRequest {
   code: string;
 }
 
-export interface EmailAuthResponse {
+export interface AuthCreditailsResponse {
   accessToken: string;
   refreshToken: string;
   userId: string;
+}
+
+export interface RefreshTokenRequestDto {
+  refreshToken: string;
+}
+
+export interface ChatUserDto {
+  email: string;
+  id: string;
+  avatarUrl: string;
+  isSelf: boolean;
 }
 
 export interface MessageDto {
@@ -42,15 +58,14 @@ export interface MessageDto {
   text: string;
   userId: string;
   chatId: string;
-  /** @format date-time */
   createdAt: string;
 }
 
 export interface ChatDto {
   id: string;
   type: string;
-  /** @format date-time */
   createdAt: string;
+  chatUsers: ChatUserDto[];
   messages: MessageDto[];
 }
 
@@ -71,6 +86,20 @@ export interface SendMessageResponse {
   message: MessageDto;
 }
 
+export interface GetProfileResponse {
+  user: UserDto;
+}
+
+export interface UsersControllerUploadPhotoPayload {
+  /**
+   * Файл изображения (jpeg, png, webp)
+   * @format binary
+   */
+  photos?: File;
+}
+
+export type UsersControllerUploadPhotoData = UploadAvatarResponse;
+
 export interface UsersControllerGetUserParams {
   /**
    * ID пользователя
@@ -85,7 +114,9 @@ export type UsersControllerGetUserData = GetUserResponse;
 
 export type UsersControllerRequestEmailCodeData = RequestEmailCodeResponse;
 
-export type AuthControllerEmailAuthData = EmailAuthResponse;
+export type AuthControllerEmailAuthData = AuthCreditailsResponse;
+
+export type AuthControllerTokenRefreshData = AuthCreditailsResponse;
 
 export type ChatControllerGetChatsListData = GetChatListResponse;
 
@@ -96,6 +127,8 @@ export interface ChatControllerGetChatByIdParams {
 export type ChatControllerGetChatByIdData = GetChatByIdResponse;
 
 export type ChatControllerSendMessageData = SendMessageResponse;
+
+export type ProfileControllerGetProfileData = GetProfileResponse;
 
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
@@ -319,6 +352,25 @@ export class UserServiceClient<SecurityDataType extends unknown> extends HttpCli
      * No description
      *
      * @tags Users
+     * @name UsersControllerUploadPhoto
+     * @request POST:/users/upload/avatar
+     * @secure
+     */
+    usersControllerUploadPhoto: (data: UsersControllerUploadPhotoPayload, params: RequestParams = {}) =>
+      this.request<UsersControllerUploadPhotoData, any>({
+        path: `/users/upload/avatar`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.FormData,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Users
      * @name UsersControllerGetUser
      * @request GET:/users
      * @secure
@@ -364,6 +416,25 @@ export class UserServiceClient<SecurityDataType extends unknown> extends HttpCli
     authControllerEmailAuth: (data: EmailAuthRequest, params: RequestParams = {}) =>
       this.request<AuthControllerEmailAuthData, any>({
         path: `/auth/email-auth`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Auth
+     * @name AuthControllerTokenRefresh
+     * @request POST:/auth/token/refresh
+     * @secure
+     */
+    authControllerTokenRefresh: (data: RefreshTokenRequestDto, params: RequestParams = {}) =>
+      this.request<AuthControllerTokenRefreshData, any>({
+        path: `/auth/token/refresh`,
         method: "POST",
         body: data,
         secure: true,
@@ -423,6 +494,24 @@ export class UserServiceClient<SecurityDataType extends unknown> extends HttpCli
         body: data,
         secure: true,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  profile = {
+    /**
+     * No description
+     *
+     * @tags Profile
+     * @name ProfileControllerGetProfile
+     * @request GET:/profile
+     * @secure
+     */
+    profileControllerGetProfile: (params: RequestParams = {}) =>
+      this.request<ProfileControllerGetProfileData, any>({
+        path: `/profile`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),

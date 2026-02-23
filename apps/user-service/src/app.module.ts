@@ -8,6 +8,7 @@ import CacheModule from './shared/cache/cache.module';
 import { UsersModule } from './users/users.module';
 import { ChatModule } from './chat/chat.module';
 import { S3Module } from './s3/s3.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { S3Module } from './s3/s3.module';
     AuthModule,
     ChatModule,
     S3Module,
+    ProfileModule,
   ],
 })
 export class AppModule {}

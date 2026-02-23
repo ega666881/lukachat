@@ -1,18 +1,31 @@
 import { AuthCredentials } from "@luka/models";
 import { Either, leftWithReason, right, WithReason } from "@luka/monads";
-import { UserServiceClient } from "@luka/user-service-client";
 import { router } from "expo-router";
 import { authStorage } from "../app/utils/authStorage";
+import { userServiceClient } from "../app/utils/userServiceClient";
 
 class AuthService {
-  private readonly userService = new UserServiceClient({
-    baseUrl: process.env.EXPO_PUBLIC_API_URL,
-  });
+  async refreshAccessToken(
+    refreshToken: string,
+  ): Promise<Either<WithReason, AuthCredentials>> {
+    const response = await userServiceClient.auth.authControllerTokenRefresh({
+      refreshToken,
+    });
+
+    if (!response.ok) {
+      return leftWithReason("Error refresh token");
+    }
+
+    const { data } = response;
+
+    return right(
+      new AuthCredentials(data.userId, data.accessToken, data.refreshToken),
+    );
+  }
 
   async requestEmailCode(email: string): Promise<Either<WithReason, boolean>> {
-    console.log(process.env.EXPO_PUBLIC_API_URL);
     const response =
-      await this.userService.users.usersControllerRequestEmailCode({ email });
+      await userServiceClient.users.usersControllerRequestEmailCode({ email });
 
     if (!response.ok) {
       return leftWithReason(response.error.message);
@@ -25,7 +38,7 @@ class AuthService {
     email: string,
     code: string,
   ): Promise<Either<WithReason, boolean>> {
-    const response = await this.userService.auth.authControllerEmailAuth({
+    const response = await userServiceClient.auth.authControllerEmailAuth({
       email,
       code,
     });

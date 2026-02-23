@@ -94,9 +94,7 @@ const CodeInput: React.FC<CodeInputProps> = ({
   };
 
   const clearCode = () => {
-    console.log("");
     setCode("");
-    console.log(code);
     setIsFocused(true);
     inputRef.current?.focus();
     animations.current.forEach((anim) => anim.setValue(0));

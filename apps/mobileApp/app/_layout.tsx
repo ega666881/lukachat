@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import { rootStore, StoreProvider } from "../stores";
+import { MenuButton } from "./sharedComponents/menuButton/menuButton";
 import { ThemeProvider } from "./theme/themeProvider";
 
 function RootLayout() {
@@ -34,8 +35,21 @@ function RootLayout() {
           <Stack.Screen
             name="screens/chats/chatsScreen"
             options={{
+              headerLeft: () => {
+                return <MenuButton />;
+              },
               title: "Чаты",
               headerBackVisible: false,
+              headerStyle: { backgroundColor: "#121212" },
+              headerTintColor: "#fff",
+              contentStyle: { backgroundColor: "#1E1E1E" },
+            }}
+          />
+          <Stack.Screen
+            name="screens/activeChat/activeChat"
+            options={{
+              title: "Переписка",
+              headerBackVisible: true,
               headerStyle: { backgroundColor: "#121212" },
               headerTintColor: "#fff",
               contentStyle: { backgroundColor: "#1E1E1E" },

@@ -32,6 +32,10 @@ export interface GetChatsResponse {
   chats: ChatDto[];
 }
 
+export interface GetChatByIdResponse {
+  chat: ChatDto;
+}
+
 export interface SendMessageRequest {
   userId: string;
   chatId: string;
@@ -66,7 +70,7 @@ export interface ChatControllerGetChatByIdParams {
   chatId: string;
 }
 
-export type ChatControllerGetChatByIdData = GetChatsResponse;
+export type ChatControllerGetChatByIdData = GetChatByIdResponse;
 
 export type ChatControllerSendMessageData = SendMessageResponse;
 

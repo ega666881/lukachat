@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 import { IsUuid } from '../../../shared/decorators/uuid.decorator';
 import { chatsTable } from '../../schemas/chats.schema';
@@ -15,6 +16,7 @@ export class GetChatByIdRequest {
 }
 
 export class GetChatByIdResponse {
+  @ApiProperty({ type: ChatDto })
   @IsNotEmpty()
   chat!: ChatDto;
 }

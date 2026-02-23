@@ -46,7 +46,7 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/GetChatsResponse" }
+                "schema": { "$ref": "#/components/schemas/GetChatByIdResponse" }
               }
             }
           }
@@ -153,6 +153,11 @@
           }
         },
         "required": ["chats"]
+      },
+      "GetChatByIdResponse": {
+        "type": "object",
+        "properties": { "chat": { "$ref": "#/components/schemas/ChatDto" } },
+        "required": ["chat"]
       },
       "SendMessageRequest": {
         "type": "object",

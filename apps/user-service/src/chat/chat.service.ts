@@ -1,4 +1,5 @@
 import {
+  ChatDto,
   ChatServiceClient,
   SendMessageResponse,
 } from '@luka/chat-service-client';
@@ -22,14 +23,51 @@ export class ChatService {
     });
   }
 
-  async getChatById(chatId: string) {
+  private async buildChatsObject(chats: ChatDto[], userId: string) {
+    const allUserIds = [
+      ...new Set(chats.flatMap((item) => item.chatUsers || [])),
+    ];
+
+    const users = await this.usersService.getManyUsersByIds(allUserIds);
+
+    const usersMap = new Map<string, (typeof users)[number]>();
+    for (const user of users) {
+      usersMap.set(user.id, user);
+    }
+
+    return chats.map((item) => ({
+      chat: {
+        id: item.id,
+        type: item.type as ChatType,
+        createdAt: item.createdAt,
+      },
+      messages: item.messages,
+      chatUsers: (item.chatUsers || [])
+        .map((userId) => usersMap.get(userId))
+        .filter((user): user is NonNullable<typeof user> => user !== undefined)
+        .map((user) => ({
+          ...user,
+          isSelf: user.id === userId,
+        })),
+    }));
+  }
+
+  async getChatById(chatId: string, userId: string) {
     const getChatResponse =
       await this.chatService.chat.chatControllerGetChatById({ chatId });
+
     if (!getChatResponse.ok) {
       return leftWithReason(getChatResponse.error.message);
     }
 
-    return right(getChatResponse.data);
+    const buildedChat = await this.buildChatsObject(
+      [getChatResponse.data.chat],
+      userId,
+    );
+
+    const { chat, messages, chatUsers } = buildedChat[0];
+
+    return right(Chat.fromResponse(chat, messages, chatUsers));
   }
 
   async getChatLists(userId: string): Promise<Either<WithReason, Chat[]>> {
@@ -42,29 +80,7 @@ export class ChatService {
 
     const { chats } = getChatListResult.data;
 
-    const allUserIds = [
-      ...new Set(chats.flatMap((item) => item.chatUsers || [])),
-    ];
-
-    const users = await this.usersService.getManyUsersByIds(allUserIds);
-
-    const usersMap = new Map<string, (typeof users)[number]>();
-    for (const user of users) {
-      usersMap.set(user.id, user);
-    }
-
-    const result = chats.map((item) => ({
-      chat: {
-        id: item.id,
-        type: item.type as ChatType,
-        createdAt: item.createdAt,
-      },
-      messages: item.messages,
-      chatUsers: (item.chatUsers || [])
-        .map((userId) => usersMap.get(userId))
-        .filter((user): user is NonNullable<typeof user> => user !== undefined),
-    }));
-
+    const result = await this.buildChatsObject(chats, userId);
     return right(Chat.fromResponses(result));
   }
 

@@ -42,7 +42,7 @@ export class UserRepository {
     return User.fromTables(result);
   }
 
-  async getById(id: UUID): Promise<Either<WithReason, User>> {
+  async getById(id: UUID | string): Promise<Either<WithReason, User>> {
     const result = await this.db
       .select()
       .from(usersTable)

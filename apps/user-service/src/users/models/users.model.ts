@@ -2,6 +2,12 @@ import { UUID } from 'crypto';
 import { UsersTable } from '../schemas/users.schema';
 import { UserDto } from '../web/dto/user.dto';
 
+export interface IUserResponse {
+  id: string;
+  email: string;
+  avatarUrl: string | null;
+}
+
 export default class User {
   readonly id: UUID;
   readonly email: string;
@@ -33,10 +39,11 @@ export default class User {
     });
   }
 
-  static toResponse(user: User) {
+  static toResponse(user: User): IUserResponse {
     return {
       id: user.id,
       email: user.email!,
+      avatarUrl: user.avatarUrl,
     };
   }
 

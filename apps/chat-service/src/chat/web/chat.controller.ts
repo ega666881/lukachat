@@ -11,7 +11,10 @@ import { ApiOkResponse } from '@nestjs/swagger';
 import { ChatService } from '../chat.service';
 import Chat from '../models/chat.model';
 import { CreateChatRequest, CreateChatResponse } from './dto/create-chat.dto';
-import { GetChatByIdRequest } from './dto/get-chat-by-id.dto';
+import {
+  GetChatByIdRequest,
+  GetChatByIdResponse,
+} from './dto/get-chat-by-id.dto';
 import { GetChatsRequest, GetChatsResponse } from './dto/get-chats.dto';
 import {
   SendMessageRequest,
@@ -32,7 +35,7 @@ export class ChatController {
   }
 
   @Get('/get-chat')
-  @ApiOkResponse({ type: GetChatsResponse })
+  @ApiOkResponse({ type: GetChatByIdResponse })
   async getChatById(@Query() dto: GetChatByIdRequest) {
     const { chatId } = dto;
     const getChatResult = await this.service.getById(chatId);

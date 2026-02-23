@@ -12,7 +12,7 @@ export class EmailAuthRequest {
   code!: string;
 }
 
-export class EmailAuthResponse {
+export class AuthCreditailsResponse {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()

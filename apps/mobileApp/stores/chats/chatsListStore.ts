@@ -14,11 +14,15 @@ export class ChatsListStore {
   async getChats() {
     const getChatsResult = await chatService.getChatList();
     if (!getChatsResult.ok) {
+      if (getChatsResult.data.reason === "Invalid token") {
+        return router.navigate("/screens/auth/authScreen");
+      }
       rootStore.errorStore.setError({
         text: getChatsResult.data.reason,
       });
       return router.navigate("/screens/error/errorScreen");
     }
+
     this.chatsList = getChatsResult.payload;
   }
 }

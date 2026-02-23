@@ -27,7 +27,9 @@ export class AuthService {
   ): Promise<Either<WithReason, AuthCredentials>> {
     let payload;
     try {
-      payload = this.jwtService.verify(oldRefreshToken) as {
+      payload = this.jwtService.verify(oldRefreshToken, {
+        secret: this.jwtSecret,
+      }) as {
         userId: string;
       };
     } catch {

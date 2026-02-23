@@ -47,9 +47,13 @@ export class ChatController {
 
   @Get('/get-chat-by-id')
   @ApiOkResponse({ type: GetChatByIdResponse })
-  async getChatById(@Query() dto: GetChatByIdRequest) {
+  async getChatById(
+    @Query() dto: GetChatByIdRequest,
+    @CurrentUser() user: CurrentUserPayload,
+  ) {
     const { chatId } = dto;
-    const getChatResult = await this.service.getChatById(chatId);
+    const { userId } = user;
+    const getChatResult = await this.service.getChatById(chatId, userId);
 
     if (!getChatResult.ok) {
       throw new HttpException(
@@ -58,7 +62,7 @@ export class ChatController {
       );
     }
 
-    return getChatResult.payload;
+    return { chat: getChatResult.payload };
   }
 
   @Post('/send-message')

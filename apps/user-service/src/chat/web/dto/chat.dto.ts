@@ -10,6 +10,7 @@ import {
 
 import { ChatType } from '@luka/enums';
 import { ApiProperty } from '@nestjs/swagger';
+import { ChatUserDto } from '../../../users/web/dto/user.dto';
 import { MessageDto } from './message.dto';
 
 export class ChatDto {
@@ -28,6 +29,10 @@ export class ChatDto {
   @Transform(({ value }) => (value instanceof Date ? value : new Date(value)))
   @Expose()
   readonly createdAt: string;
+
+  @ApiProperty({ type: ChatUserDto, isArray: true })
+  @IsArray()
+  readonly chatUsers: ChatUserDto[];
 
   @ApiProperty({ type: MessageDto, isArray: true })
   @IsOptional()

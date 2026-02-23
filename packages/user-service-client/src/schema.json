@@ -1,6 +1,43 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/users/upload/avatar": {
+      "post": {
+        "operationId": "UsersController_uploadPhoto",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["photo"],
+                "properties": {
+                  "photos": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Файл изображения (jpeg, png, webp)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadAvatarResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Users"]
+      }
+    },
     "/users": {
       "get": {
         "operationId": "UsersController_getUser",
@@ -82,7 +119,38 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/EmailAuthResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/AuthCreditailsResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "/auth/token/refresh": {
+      "post": {
+        "operationId": "AuthController_tokenRefresh",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthCreditailsResponse"
+                }
               }
             }
           }
@@ -155,6 +223,23 @@
         },
         "tags": ["Chat"]
       }
+    },
+    "/profile": {
+      "get": {
+        "operationId": "ProfileController_getProfile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GetProfileResponse" }
+              }
+            }
+          }
+        },
+        "tags": ["Profile"]
+      }
     }
   },
   "info": {
@@ -170,13 +255,19 @@
       "bearer": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" }
     },
     "schemas": {
+      "UploadAvatarResponse": {
+        "type": "object",
+        "properties": { "uploadedUrl": { "type": "string" } },
+        "required": ["uploadedUrl"]
+      },
       "UserDto": {
         "type": "object",
         "properties": {
           "email": { "type": "string" },
-          "id": { "type": "string" }
+          "id": { "type": "string" },
+          "avatarUrl": { "type": "string" }
         },
-        "required": ["email", "id"]
+        "required": ["email", "id", "avatarUrl"]
       },
       "GetUserResponse": {
         "type": "object",
@@ -201,7 +292,7 @@
         },
         "required": ["email", "code"]
       },
-      "EmailAuthResponse": {
+      "AuthCreditailsResponse": {
         "type": "object",
         "properties": {
           "accessToken": { "type": "string" },
@@ -210,6 +301,21 @@
         },
         "required": ["accessToken", "refreshToken", "userId"]
       },
+      "RefreshTokenRequestDto": {
+        "type": "object",
+        "properties": { "refreshToken": { "type": "string" } },
+        "required": ["refreshToken"]
+      },
+      "ChatUserDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "id": { "type": "string" },
+          "avatarUrl": { "type": "string" },
+          "isSelf": { "type": "boolean" }
+        },
+        "required": ["email", "id", "avatarUrl", "isSelf"]
+      },
       "MessageDto": {
         "type": "object",
         "properties": {
@@ -217,7 +323,7 @@
           "text": { "type": "string" },
           "userId": { "type": "string" },
           "chatId": { "type": "string" },
-          "createdAt": { "format": "date-time", "type": "string" }
+          "createdAt": { "type": "string" }
         },
         "required": ["id", "text", "userId", "chatId", "createdAt"]
       },
@@ -226,13 +332,17 @@
         "properties": {
           "id": { "type": "string" },
           "type": { "type": "string" },
-          "createdAt": { "format": "date-time", "type": "string" },
+          "createdAt": { "type": "string" },
+          "chatUsers": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ChatUserDto" }
+          },
           "messages": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/MessageDto" }
           }
         },
-        "required": ["id", "type", "createdAt", "messages"]
+        "required": ["id", "type", "createdAt", "chatUsers", "messages"]
       },
       "GetChatListResponse": {
         "type": "object",
@@ -263,6 +373,11 @@
           "message": { "$ref": "#/components/schemas/MessageDto" }
         },
         "required": ["message"]
+      },
+      "GetProfileResponse": {
+        "type": "object",
+        "properties": { "user": { "$ref": "#/components/schemas/UserDto" } },
+        "required": ["user"]
       }
     }
   },

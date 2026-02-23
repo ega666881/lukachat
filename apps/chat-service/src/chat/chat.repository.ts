@@ -2,7 +2,7 @@ import { ChatType } from '@luka/enums';
 import { Either, leftWithReason, right, WithReason } from '@luka/monads';
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { and, desc, eq, inArray, max } from 'drizzle-orm';
+import { and, asc, eq, inArray, max } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { R } from '../shared/enums/reason.enum';
 import Chat from './models/chat.model';
@@ -24,7 +24,7 @@ export class ChatRepository {
       .from(chatsTable)
       .leftJoin(messagesTable, eq(chatsTable.id, messagesTable.chatId))
       .where(eq(chatsTable.id, chatId))
-      .orderBy(desc(messagesTable.createdAt));
+      .orderBy(asc(messagesTable.createdAt));
 
     if (!result[0]) {
       return leftWithReason(R.CHAT_NOT_FOUND);

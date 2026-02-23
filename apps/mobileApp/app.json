@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "lukaChat",
-    "slug": "lukaChat",
+    "name": "mobileApp",
+    "slug": "mobileApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/lukachatLogo.png",
