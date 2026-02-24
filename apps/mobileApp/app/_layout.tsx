@@ -7,11 +7,6 @@ function RootLayout() {
   return (
     <ThemeProvider>
       <StoreProvider value={rootStore}>
-        {/* <StatusBar
-        style={isDarkMode ? "light" : "dark"}
-        backgroundColor={isDarkMode ? "#000000" : "#FFFFFF"}
-      /> */}
-
         <Stack>
           <Stack.Screen
             name="index"

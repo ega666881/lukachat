@@ -28,6 +28,7 @@ class AuthService {
       await userServiceClient.users.usersControllerRequestEmailCode({ email });
 
     if (!response.ok) {
+      console.log(response.error, email);
       return leftWithReason(response.error.message);
     }
 

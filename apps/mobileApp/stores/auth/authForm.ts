@@ -38,6 +38,7 @@ export class AuthFormStore {
     this.isCodeProcessSending = true;
     const sendEmailCodeResult = await authService.requestEmailCode(this.email);
     this.isCodeProcessSending = false;
+
     if (!sendEmailCodeResult.ok) {
       this.errorMessage = sendEmailCodeResult.data.reason;
       return;

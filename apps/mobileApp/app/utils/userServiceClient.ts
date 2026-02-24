@@ -4,9 +4,9 @@ import { createAuthFetch } from "./authFetch";
 
 const apiUrl = Constants.expoConfig?.extra?.EXPO_PUBLIC_API_URL;
 
-console.log(apiUrl);
+console.log(apiUrl, process.env.EXPO_PUBLIC_API_URL);
 
 export const userServiceClient = new UserServiceClient({
-  baseUrl: apiUrl,
+  baseUrl: process.env.EXPO_PUBLIC_API_URL,
   customFetch: createAuthFetch(10_000),
 });
