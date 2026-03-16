@@ -6,7 +6,6 @@ interface AvatarProps {
 }
 
 function Avatar({ imageUrl }: AvatarProps) {
-  console.log(imageUrl);
   return (
     <Image
       source={{

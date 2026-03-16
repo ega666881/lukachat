@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { Text, TextInput, View } from "react-native";
-import { useStore } from "../../../stores";
 import { LoadingButton } from "../../sharedComponents/loadingButton/loadingButton";
+import { useStore } from "../../stores";
 import authStyles from "./authScreen.style";
 import CodeInput from "./components/codeInput/emailCodeInput";
 

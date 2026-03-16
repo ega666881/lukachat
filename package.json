@@ -6,6 +6,8 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "test": "turbo test",
+    "build:chat-service": "pnpm --filter=@luka/chat-service run build",
+    "start:chat-service": "pnpm --filter=@luka/chat-service run start:prod",
     "clean": "turbo clean && rm -rf node_modules .next dist",
     "clean:all": "rm -rf node_modules && find . -name \"node_modules\" -type d -prune -exec rm -rf '{}' +"
   },

@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { Text, View } from "react-native";
-import Message from "../../../../../models/message.model";
-import { useStore } from "../../../../../stores";
+import Message from "../../../../models/message.model";
+import { useStore } from "../../../../stores";
 import messageCardStyle from "./messageCard.style";
 
 interface MessageCardProps {

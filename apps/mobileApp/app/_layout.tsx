@@ -1,6 +1,8 @@
 import { Stack } from "expo-router";
-import { rootStore, StoreProvider } from "../stores";
 import { MenuButton } from "./sharedComponents/menuButton/menuButton";
+import SearchButton from "./sharedComponents/searchButton/searchButton";
+import SearchRow from "./sharedComponents/searchRow/searchRow";
+import { rootStore, StoreProvider } from "./stores";
 import { ThemeProvider } from "./theme/themeProvider";
 
 function RootLayout() {
@@ -28,13 +30,49 @@ function RootLayout() {
             }}
           />
           <Stack.Screen
+            name="screens/profile/profileScreen"
+            options={{
+              title: "Профиль",
+              headerShown: false,
+              headerStyle: { backgroundColor: "#121212" },
+              headerTintColor: "#fff",
+              contentStyle: { backgroundColor: "#1E1E1E" },
+            }}
+          />
+          <Stack.Screen
+            name="screens/menu/menuScreen"
+            options={{
+              title: "Меню",
+              headerShown: true,
+              headerStyle: { backgroundColor: "#121212" },
+              headerTintColor: "#fff",
+              contentStyle: { backgroundColor: "#1E1E1E" },
+            }}
+          />
+          <Stack.Screen
             name="screens/chats/chatsScreen"
             options={{
               headerLeft: () => {
                 return <MenuButton />;
               },
+              headerRight: () => {
+                return <SearchButton />;
+              },
               title: "Чаты",
               headerBackVisible: false,
+              headerStyle: { backgroundColor: "#121212" },
+              headerTintColor: "#fff",
+              contentStyle: { backgroundColor: "#1E1E1E" },
+            }}
+          />
+          <Stack.Screen
+            name="screens/search/search"
+            options={{
+              headerRight: () => {
+                return <SearchRow />;
+              },
+              title: "Поиск",
+              headerBackVisible: true,
               headerStyle: { backgroundColor: "#121212" },
               headerTintColor: "#fff",
               contentStyle: { backgroundColor: "#1E1E1E" },

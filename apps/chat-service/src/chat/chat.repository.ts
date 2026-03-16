@@ -2,7 +2,7 @@ import { ChatType } from '@luka/enums';
 import { Either, leftWithReason, right, WithReason } from '@luka/monads';
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { and, asc, eq, inArray, max } from 'drizzle-orm';
+import { and, asc, count, eq, inArray, max, sql } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { R } from '../shared/enums/reason.enum';
 import Chat from './models/chat.model';
@@ -49,6 +49,24 @@ export class ChatRepository {
       );
 
     return right(Chat.fromTable(chat, messages, chatUsers));
+  }
+
+  async chatByUsersExists(
+    usersIds: string[],
+  ): Promise<{ chatId: string; userCount: number }[] | null> {
+    if (usersIds.length === 0) return null;
+
+    const result = await this.db
+      .select({
+        chatId: chatsUsersTable.chatId,
+        userCount: count(chatsUsersTable.userId),
+      })
+      .from(chatsUsersTable)
+      .where(inArray(chatsUsersTable.userId, usersIds))
+      .groupBy(chatsUsersTable.chatId)
+      .having(sql`COUNT(*) = ${usersIds.length}`);
+
+    return result;
   }
 
   async createMessage(

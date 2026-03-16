@@ -5,8 +5,8 @@ export default StyleSheet.create({
     flexGrow: 1,
     padding: 10,
     gap: 10,
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
+    // alignItems: "flex-end",
+    // justifyContent: "flex-end",
   },
   inputContainer: {
     flexDirection: "row",

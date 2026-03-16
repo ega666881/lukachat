@@ -1,31 +1,29 @@
 {
   "expo": {
-    "name": "mobileApp",
+    "name": "lukaChat",
     "slug": "mobileApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/lukachatLogo.png",
     "scheme": "mobileapp",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.luka.lukaChat"
     },
     "android": {
       "softwareKeyboardLayoutMode": "resize",
+      "permissions": [
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_MEDIA_IMAGES"
+      ],
       "adaptiveIcon": {
         "backgroundColor": "#1E1E1E",
         "foregroundImage": "./assets/images/lukachatLogo.png",
         "backgroundImage": "./assets/images/lukachatLogo.png",
         "monochromeImage": "./assets/images/lukachatLogo.png"
       },
-      "androidManifest": {
-        "application": {
-          "usesCleartextTraffic": true
-        }
-      },
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.luka.lukaChat"
     },
@@ -37,6 +35,7 @@
       "expo-router",
       [
         "expo-splash-screen",
+
         {
           "image": "./assets/images/lukachatLogo.png",
           "imageWidth": 200,

@@ -2,16 +2,10 @@
 import { useNavigation } from "@react-navigation/native";
 import { observer } from "mobx-react-lite";
 import { useEffect, useLayoutEffect, useRef } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { useStore } from "../../../stores";
+import { Text, TextInput, TouchableOpacity, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useKeyboard } from "../../hooks/useKeyboard";
+import { useStore } from "../../stores";
 import activeChatStyle from "./activeChat.style";
 import ChatHeader from "./components/chatHeader/chatHeader";
 import MessageCard from "./components/messageCard/messageCard";
@@ -19,11 +13,13 @@ import MessageCard from "./components/messageCard/messageCard";
 function ActiveChat() {
   const { activeChatStore } = useStore();
   const navigation = useNavigation();
-  const scrollViewRef = useRef(null);
+  const scrollViewRef = useRef<KeyboardAwareScrollView>(null);
+  const inputRef = useRef<TextInput>(null);
+
+  const { isKeyboardVisible, keyboardHeight } = useKeyboard();
 
   const scrollToBottom = () => {
-    //@ts-ignore
-    scrollViewRef.current?.scrollToEnd({ animated: true });
+    scrollViewRef.current?.scrollToEnd(true);
   };
 
   useEffect(() => {
@@ -44,88 +40,49 @@ function ActiveChat() {
   }, [activeChatStore.activeChat]);
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1, padding: 10, marginBottom: 10 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
-      enabled={true}
+    <View
+      style={{
+        flex: 1,
+        paddingBottom: 10,
+        padding: 10,
+        marginBottom: isKeyboardVisible ? keyboardHeight : 10,
+      }}
     >
-      <ScrollView
-        ref={scrollViewRef}
-        style={{ flex: 1 }}
+      <KeyboardAwareScrollView
+        style={{
+          flex: 1,
+          padding: 10,
+          marginBottom: 10,
+          height: "100%",
+        }}
         contentContainerStyle={activeChatStyle.container}
+        ref={scrollViewRef}
         keyboardShouldPersistTaps="handled"
         onContentSizeChange={scrollToBottom}
       >
         {activeChatStore.activeChat?.messages.map((message, key) => (
           <MessageCard message={message} key={key} />
         ))}
-        {/* {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))}
-        {activeChatStore.activeChat?.messages.map((message, key) => (
-          <MessageCard message={message} key={key} />
-        ))} */}
-      </ScrollView>
+      </KeyboardAwareScrollView>
       <View style={activeChatStyle.inputContainer}>
         <TextInput
+          value={activeChatStore.messageInputText}
           style={activeChatStyle.input}
           placeholder="Введите сообщение..."
+          onChangeText={activeChatStore.setMessageInputText}
           multiline
+          ref={inputRef}
         />
-        <TouchableOpacity style={activeChatStyle.sendButton}>
+        <TouchableOpacity
+          style={activeChatStyle.sendButton}
+          onPress={() => {
+            activeChatStore.sendMessage();
+          }}
+        >
           <Text style={activeChatStyle.sendButtonText}>➤</Text>
         </TouchableOpacity>
       </View>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 

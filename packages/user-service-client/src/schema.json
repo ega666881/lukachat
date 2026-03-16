@@ -73,6 +73,30 @@
         "tags": ["Users"]
       }
     },
+    "/users/find-user-by-email": {
+      "get": {
+        "operationId": "UsersController_findUserByEmail",
+        "parameters": [
+          {
+            "name": "email",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FindUserResponse" }
+              }
+            }
+          }
+        },
+        "tags": ["Users"]
+      }
+    },
     "/users/request-email-code": {
       "post": {
         "operationId": "UsersController_requestEmailCode",
@@ -168,6 +192,31 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/GetChatListResponse" }
+              }
+            }
+          }
+        },
+        "tags": ["Chat"]
+      }
+    },
+    "/chat/create-chat": {
+      "post": {
+        "operationId": "ChatController_createChat",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateChatRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CreateChatResponse" }
               }
             }
           }
@@ -274,6 +323,16 @@
         "properties": { "user": { "$ref": "#/components/schemas/UserDto" } },
         "required": ["user"]
       },
+      "FindUserResponse": {
+        "type": "object",
+        "properties": {
+          "foundedUsers": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/UserDto" }
+          }
+        },
+        "required": ["foundedUsers"]
+      },
       "RequestEmailCodeRequest": {
         "type": "object",
         "properties": { "email": { "type": "string" } },
@@ -353,6 +412,21 @@
           }
         },
         "required": ["chats"]
+      },
+      "CreateChatRequest": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string" },
+          "companionId": { "type": "string" }
+        },
+        "required": ["type", "companionId"]
+      },
+      "CreateChatResponse": {
+        "type": "object",
+        "properties": {
+          "createdChat": { "$ref": "#/components/schemas/ChatDto" }
+        },
+        "required": ["createdChat"]
       },
       "GetChatByIdResponse": {
         "type": "object",

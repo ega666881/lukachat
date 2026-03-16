@@ -69,6 +69,10 @@ export class UsersService {
     return this.repository.getById(id);
   }
 
+  async findUsersByEmail(email: string): Promise<Either<WithReason, User[]>> {
+    return right(await this.repository.findUserByEmail(email));
+  }
+
   async getOrCreateUser(email: string) {
     const getUserResult = await this.getByEmail(email);
     if (getUserResult.ok === false) {

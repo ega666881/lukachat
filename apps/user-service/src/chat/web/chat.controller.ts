@@ -13,6 +13,7 @@ import type { CurrentUserPayload } from '../../auth/interfaces/jwt-payload.inter
 import { JwtAuthGuard } from '../../auth/jwt/jwt.auth.guard';
 import { CurrentUser } from '../../shared/decorators/current-user.decorator';
 import { ChatService } from '../chat.service';
+import { CreateChatRequest, CreateChatResponse } from './dto/create-chat.dto';
 import {
   GetChatByIdRequest,
   GetChatByIdResponse,
@@ -43,6 +44,31 @@ export class ChatController {
     }
 
     return { chats: getChatListResult.payload };
+  }
+
+  @Post('/create-chat')
+  @ApiOkResponse({ type: CreateChatResponse })
+  async createChat(
+    @Body() dto: CreateChatRequest,
+    @CurrentUser() currentUser: CurrentUserPayload,
+  ) {
+    const { userId } = currentUser;
+    const { type, companionId } = dto;
+
+    const createChatResult = await this.service.createChat(
+      userId,
+      type,
+      companionId,
+    );
+
+    if (!createChatResult.ok) {
+      throw new HttpException(
+        createChatResult.data.reason,
+        HttpStatus.BAD_GATEWAY,
+      );
+    }
+
+    return { createdChat: createChatResult.payload };
   }
 
   @Get('/get-chat-by-id')

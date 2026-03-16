@@ -40,7 +40,8 @@ export default StyleSheet.create({
     fontSize: 15,
   },
   emailCodeContainer: {
-    padding: 20,
+    flex: 1,
+    width: "100%",
     justifyContent: "center",
     alignItems: "center",
     gap: 20,

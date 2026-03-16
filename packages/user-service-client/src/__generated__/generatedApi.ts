@@ -23,6 +23,10 @@ export interface GetUserResponse {
   user: UserDto;
 }
 
+export interface FindUserResponse {
+  foundedUsers: UserDto[];
+}
+
 export interface RequestEmailCodeRequest {
   email: string;
 }
@@ -73,6 +77,15 @@ export interface GetChatListResponse {
   chats: ChatDto[];
 }
 
+export interface CreateChatRequest {
+  type: string;
+  companionId: string;
+}
+
+export interface CreateChatResponse {
+  createdChat: ChatDto;
+}
+
 export interface GetChatByIdResponse {
   chat: ChatDto;
 }
@@ -112,6 +125,12 @@ export interface UsersControllerGetUserParams {
 
 export type UsersControllerGetUserData = GetUserResponse;
 
+export interface UsersControllerFindUserByEmailParams {
+  email: string;
+}
+
+export type UsersControllerFindUserByEmailData = FindUserResponse;
+
 export type UsersControllerRequestEmailCodeData = RequestEmailCodeResponse;
 
 export type AuthControllerEmailAuthData = AuthCreditailsResponse;
@@ -119,6 +138,8 @@ export type AuthControllerEmailAuthData = AuthCreditailsResponse;
 export type AuthControllerTokenRefreshData = AuthCreditailsResponse;
 
 export type ChatControllerGetChatsListData = GetChatListResponse;
+
+export type ChatControllerCreateChatData = CreateChatResponse;
 
 export interface ChatControllerGetChatByIdParams {
   chatId: string;
@@ -389,6 +410,24 @@ export class UserServiceClient<SecurityDataType extends unknown> extends HttpCli
      * No description
      *
      * @tags Users
+     * @name UsersControllerFindUserByEmail
+     * @request GET:/users/find-user-by-email
+     * @secure
+     */
+    usersControllerFindUserByEmail: (query: UsersControllerFindUserByEmailParams, params: RequestParams = {}) =>
+      this.request<UsersControllerFindUserByEmailData, any>({
+        path: `/users/find-user-by-email`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Users
      * @name UsersControllerRequestEmailCode
      * @request POST:/users/request-email-code
      * @secure
@@ -457,6 +496,25 @@ export class UserServiceClient<SecurityDataType extends unknown> extends HttpCli
         path: `/chat/get-chats-list`,
         method: "GET",
         secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Chat
+     * @name ChatControllerCreateChat
+     * @request POST:/chat/create-chat
+     * @secure
+     */
+    chatControllerCreateChat: (data: CreateChatRequest, params: RequestParams = {}) =>
+      this.request<ChatControllerCreateChatData, any>({
+        path: `/chat/create-chat`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

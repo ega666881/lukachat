@@ -10,11 +10,11 @@ export default StyleSheet.create({
   cellsContainer: {
     flexDirection: "row",
     justifyContent: "center",
-    gap: 8, // Для новых версий RN, иначе используйте marginRight в ячейке
+    gap: 8,
   },
   cell: {
-    width: 48,
-    height: 56,
+    width: 40,
+    height: 50,
     borderWidth: 2,
     borderColor: "#E0E0E0",
     borderRadius: 12,

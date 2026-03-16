@@ -1,6 +1,6 @@
 import { router } from "expo-router";
-import { apiHelper } from "../../services/apiHelper";
-import { authService } from "../../services/authService";
+import { apiHelper } from "../services/apiHelper";
+import { authService } from "../services/authService";
 import { authStorage } from "./authStorage";
 
 let isRefreshing = false;

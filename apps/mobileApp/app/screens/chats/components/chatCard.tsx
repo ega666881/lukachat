@@ -1,8 +1,8 @@
 import { router } from "expo-router";
 import { Pressable, Text, View } from "react-native";
-import Chat from "../../../../models/chat.model";
-import { useStore } from "../../../../stores";
+import Chat from "../../../models/chat.model";
 import Avatar from "../../../sharedComponents/avatar/avatar";
+import { useStore } from "../../../stores";
 import chatCardStyle from "./chatCard.style";
 
 interface ChatCardProps {
@@ -35,7 +35,7 @@ export default function ChatCard({ chat }: ChatCardProps) {
       android_ripple={{ color: "rgba(255, 255, 255, 0.1)" }}
       style={({ pressed }) => [
         chatCardStyle.container,
-        { opacity: pressed ? 0.7 : 1 }, // Легкое затемнение при нажатии
+        { opacity: pressed ? 0.7 : 1 },
       ]}
     >
       <View style={chatCardStyle.container}>

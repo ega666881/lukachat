@@ -1,7 +1,7 @@
 import { Either, leftWithReason, right, WithReason } from '@luka/monads';
 import { Injectable } from '@nestjs/common';
 import { UUID } from 'crypto';
-import { eq, inArray } from 'drizzle-orm';
+import { eq, ilike, inArray } from 'drizzle-orm';
 import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import User from './models/users.model';
 import { usersTable } from './schemas/users.schema';
@@ -9,6 +9,10 @@ import { usersTable } from './schemas/users.schema';
 @Injectable()
 export class UserRepository {
   constructor(private readonly db: NodePgDatabase) {}
+
+  private escapeLikeString(str: string): string {
+    return str.replace(/([%_])/g, '\\$1');
+  }
 
   async getByEmail(email: string): Promise<Either<WithReason, User>> {
     const result = await this.db
@@ -31,6 +35,17 @@ export class UserRepository {
       .where(eq(usersTable.id, userId));
 
     return true;
+  }
+
+  async findUserByEmail(email: string): Promise<User[]> {
+    const escapedEmail = this.escapeLikeString(email);
+
+    const result = await this.db
+      .select()
+      .from(usersTable)
+      .where(ilike(usersTable.email, `%${escapedEmail}%`));
+
+    return User.fromTables(result);
   }
 
   async getByIdMany(ids: string[]): Promise<User[]> {

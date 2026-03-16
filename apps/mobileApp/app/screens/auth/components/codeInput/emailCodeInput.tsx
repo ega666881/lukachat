@@ -135,7 +135,6 @@ const CodeInput: React.FC<CodeInputProps> = ({
   return (
     <View testID={testID} style={[styles.container, containerStyle]}>
       <View style={styles.cellsContainer}>{renderCells()}</View>
-
       <TextInput
         ref={inputRef}
         value={code}

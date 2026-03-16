@@ -1,4 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
+
+import { router } from "expo-router";
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import styles from "./menuButton.style";
@@ -7,7 +9,11 @@ interface MenuButtonProps {
   onPress?: () => void;
 }
 
-export const MenuButton: React.FC<MenuButtonProps> = ({ onPress }) => {
+export const MenuButton: React.FC<MenuButtonProps> = () => {
+  const onPress = () => {
+    router.navigate("/screens/menu/menuScreen");
+  };
+
   return (
     <TouchableOpacity
       onPress={onPress}

@@ -21,6 +21,7 @@ import { JwtAuthGuard } from '../../auth/jwt/jwt.auth.guard';
 import { CurrentUser } from '../../shared/decorators/current-user.decorator';
 import User from '../models/users.model';
 import { UsersService } from '../users.service';
+import { FindUserRequest, FindUserResponse } from './dto/find-user.dto';
 import { GetUserRequest, GetUserResponse } from './dto/get-user.dto';
 import {
   RequestEmailCodeRequest,
@@ -84,6 +85,20 @@ export class UsersController {
     }
 
     return { user: User.toResponse(getUserResult.payload) };
+  }
+
+  @Get('/find-user-by-email')
+  @ApiOkResponse({ type: FindUserResponse })
+  async findUserByEmail(@Query() dto: FindUserRequest) {
+    const { email } = dto;
+    const findUserResult = await this.service.findUsersByEmail(email);
+    if (!findUserResult.ok) {
+      throw new HttpException(
+        findUserResult.data.reason,
+        HttpStatus.BAD_GATEWAY,
+      );
+    }
+    return { foundedUsers: findUserResult.payload };
   }
 
   @Post('request-email-code')

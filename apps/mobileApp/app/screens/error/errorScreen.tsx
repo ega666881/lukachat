@@ -2,7 +2,7 @@ import { router } from "expo-router";
 
 import { observer } from "mobx-react-lite";
 import { Button, Image, Text, View } from "react-native";
-import { useStore } from "../../../stores";
+import { useStore } from "../../stores";
 import { errorImages } from "./assets";
 import errorScreenStyle from "./errorScreen.style";
 

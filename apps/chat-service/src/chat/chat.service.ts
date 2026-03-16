@@ -39,6 +39,12 @@ export class ChatService {
     type: ChatType,
     addingUserIds: string[],
   ): Promise<Either<WithReason, Chat>> {
+    const chatExistsResult =
+      await this.repository.chatByUsersExists(addingUserIds);
+    if (chatExistsResult && chatExistsResult.length > 0) {
+      return this.getById(chatExistsResult[0].chatId);
+    }
+
     const createChatResult = await this.repository.createChat(type);
     if (!createChatResult.ok) {
       return leftWithReason(createChatResult.data.reason);
